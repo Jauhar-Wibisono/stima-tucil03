@@ -13,7 +13,7 @@
       <!-- styles -->
       <style>
         #map {
-          width: 500px;
+          width: 90vw;
           height: 500px;
         }
       </style>
@@ -28,13 +28,16 @@
         <input type='submit'>
       </form>
       <br>
-      <div>
-        <button id='dropdown_start'>A</button>
-        <button id='dropdown_end'>B</button>
-      </div>
       <p>distance = {{ result.distance }}</p>
-      <p>path:</p>
-      <div id='map' class='map'></div>
+      <p>path =  
+        {% for i in result.path %}
+          {% if i > 0 %}
+            ->
+          {% endif %}
+          {{ nodes[i][0] }}
+        {% endfor %}
+      </p>
+      <div id='map' class='map' ></div>
       <hr/>
       <a href="/">return</a>
       </div>
@@ -177,8 +180,8 @@
               });
             }
           });
-        document.getElementById('dropdown_start').onclick = function() {
- 
+
+          // dropdown menus
           var values = [];
           for (var i in nodes){
             values.push(nodes[i][0]);
@@ -201,8 +204,6 @@
           label.htmlFor = "startnode";
          
           document.getElementById("container_start").appendChild(label).appendChild(select);
-        }
-        document.getElementById('dropdown_end').onclick = function() {
  
           var values = [];
           for (var i in nodes){
@@ -226,7 +227,6 @@
           label.htmlFor = "endnode";
          
           document.getElementById("container_end").appendChild(label).appendChild(select);
-        }
       </script>
   </body>
 </html>

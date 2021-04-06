@@ -8,15 +8,6 @@
       <meta charset='UTF-8'>
       <meta name='viewport'
             content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'/>
-      <!-- Replace version in the URL with desired library version -->
-      <link rel='stylesheet' type='text/css' href='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.12.0/maps/maps.css'/>
-      <!-- styles -->
-      <style>
-         #map {
-             width: 100px;
-             height: 100px;
-         }
-      </style>
       {% endblock %}
   </head>
   <body>
@@ -28,20 +19,5 @@
         <input type="file" name="upload" accept=".txt" required>
         <input type="submit">
       </form>
-      <h3>Input with map:</h3>
-      <div id='map' class='map'></div>
-      <div>
-        {% block content %}{% endblock %}
-      </div>
-      <!-- scripts -->
-      <!-- Replace version in the URL with desired library version -->
-      <script src='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.12.0/maps/maps-web.min.js'></script>
-      <script>
-        tt.setProductInfo('interactiveMap', '1.0');
-        tt.map({
-            key: 'o1geElO01tAzH56UIRG60l0g6cmtDWjz',
-            container: 'map'
-        });
-      </script>
   </body>
 </html>
