@@ -16,7 +16,7 @@ Program ini menerima masukan graf dari file teks dan menampilkan jalur terpendek
 * Web browser
 
 ## Setup
-* Jalankan <code>run.bat<code> atau <code>run.sh<code> yang ada di folder bin.
+* Jalankan <code>run.bat</code> atau <code>run.sh</code> yang ada di folder bin.
 * Buka local website yang dihasilkan di web browser.
 
 ## Author
