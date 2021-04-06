@@ -43,5 +43,5 @@ def MainPage():
             # jalankan algoritme A*
             
             # tampilkan hasil
-            return render_template('results-page.html', result=graph.Astar("Arad", "Eforie", True), nodes=graph.nodes(), edge_list=graph.edgeList())
+            return render_template('results-page.html', result=graph.Astar("TMP", "Mie Cuan", True), nodes=graph.nodes(), edge_list=graph.edgeList())
     return render_template('main-page.html')
