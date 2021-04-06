@@ -93,6 +93,39 @@ class Graph:
                                     PQ[PQPosition[inFront]] = inFront
                                 else:
                                     toFront = False
+            else:
+                for neighbor in self.__adjacencyList[PQ[head]]:
+                    i = neighbor[0]
+                    distance = neighbor[1]
+                    if(not(visited[i])):
+                        if(totalDistance[i] < 0):
+                            visitedFrom[i] = PQ[head]
+                            totalDistance[i] = totalDistance[PQ[head]] + distance
+                            PQPosition[i] = len(PQ)
+                            PQ.append(i)
+                            toFront = True
+                            while(PQPosition[i]-1>head) and (toFront):
+                                inFront = PQ[PQPosition[i]-1]
+                                if (totalDistance[i] + distanceTo[i] < totalDistance[inFront] + distanceTo[inFront]):
+                                    PQPosition[i] -= 1
+                                    PQPosition[inFront] += 1
+                                    PQ[PQPosition[i]] = i
+                                    PQ[PQPosition[inFront]] = inFront
+                                else:
+                                    toFront = False
+                        elif (totalDistance[PQ[head]] + distance < totalDistance[i]):
+                            visitedFrom[i] = PQ[head]
+                            totalDistance[i] = totalDistance[PQ[head]] + distance
+                            toFront = True
+                            while(PQPosition[i]-1>head) and (toFront):
+                                inFront = PQ[PQPosition[i]-1]
+                                if (totalDistance[i] + distanceTo[i] < totalDistance[inFront] + distanceTo[inFront]):
+                                    PQPosition[i] -= 1
+                                    PQPosition[inFront] += 1
+                                    PQ[PQPosition[i]] = i
+                                    PQ[PQPosition[inFront]] = inFront
+                                else:
+                                    toFront = False
             head+=1
         path = []
         if(head < len(PQ)):

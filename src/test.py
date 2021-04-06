@@ -32,3 +32,4 @@ g.addEdgebyID(3,0)
 g.addEdgebyID(3,11)
 
 print(g.AstarbyID(0,15,True))
+print(g.AstarbyID(0,15,False))
