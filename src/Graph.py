@@ -1,8 +1,28 @@
+import math
+
 def euclidianDistance(cor1,cor2):
-    return ((cor1[0]-cor2[0])**2 + (cor1[1]-cor2[1])**2)**0.5
+    radius = 6371000
+    kartesian1 = [0,0,0]
+    kartesian2 = [0,0,0]
+    kartesian1[2] = radius*math.sin(cor1[0]*(math.pi/180))
+    kartesian2[2] = radius*math.sin(cor2[0]*(math.pi/180))
+    proj1 = radius*math.cos(cor1[0]*(math.pi/180))
+    proj2 = radius*math.cos(cor2[0]*(math.pi/180))
+
+    kartesian1[0] = proj1*math.sin(cor1[1]*(math.pi/180))
+    kartesian2[0] = proj2*math.sin(cor2[1]*(math.pi/180))
+    kartesian1[1] = proj1*math.cos(cor1[1]*(math.pi/180))
+    kartesian2[1] = proj2*math.cos(cor2[1]*(math.pi/180))
+
+    sumsquare = 0
+    for i in range (3):
+        sumsquare += (kartesian2[i]-kartesian1[i])**2
+    return (sumsquare**0.5)
 
 class Graph:
+    #Konstruktor
     def __init__(self, nodes=[], adjacencyMatrix=[]):
+        #Beberapa atribut yang dimiliki
         self.__nbNodes = len(nodes)
         self.__nodeNames = []
         self.__idNodes = {}
@@ -16,14 +36,18 @@ class Graph:
         for i in range (self.__nbNodes):
             for j in range (self.__nbNodes):
                 if adjacencyMatrix[i][j]>0:
+                    #Agar jarak dapat langsung diakses, alih alih menyimpan boolean,
+                    #AdjacencyMatrix bernilai -1 jika tidak terhubung, dan jarak 2 node tersebut jika terhubung
                     distance = euclidianDistance(self.__coordinates[i], self.__coordinates[j])
                     self.__adjacencyMatrix[i][j] = distance
                     self.__adjacencyList[i].append((j, distance))
             #print(self.__adjacencyMatrix[i])
 
+    #Getters
     def nbNodes(self):
         return self.__nbNodes
     def nodes(self):
+        #Mengembalikan array of triple terurut ID berisi nama node dan koordinat node
         toReturn = []
         for i in range (self.__nbNodes):
             toReturn.append([self.__nodeNames[i], self.__coordinates[i][0], self.__coordinates[i][1]])
@@ -45,6 +69,7 @@ class Graph:
             #print()
         return edgeCoordinates
     
+    #Menambah node
     def addNode(self, newNode):
         self.__nodeNames.append(newNode[0])
         self.__idNodes[newNode[0]] = self.__nbNodes
@@ -57,6 +82,7 @@ class Graph:
         for i in range (self.__nbNodes):
             self.__adjacencyMatrix[self.__nbNodes-1].append(-1)
     
+    #Menambah edge yang menghubungkan node berID id1 dan id2
     def addEdgebyID(self, id1, id2):
         distance = euclidianDistance(self.__coordinates[id1], self.__coordinates[id2])
         if(self.__adjacencyMatrix[id1][id2]<0):
@@ -65,12 +91,14 @@ class Graph:
             self.__adjacencyList[id1].append((id2, distance))
             self.__adjacencyList[id2].append((id1, distance))
 
+    #Menambah edge yang menghubungkan node bernama node1 dan node2
     def addEdge(self, node1, node2):
         if (node1 in self.__idNodes.keys()) and (node2 in self.__idNodes.keys()):
             id1 = self.__idNodes[node1]
             id2 = self.__idNodes[node2]
             self.addEdgebyID(id1, id2)
 
+    #Mengembalikan jalur dan jarak hasil Astar berawal dan berakhir pada node bernama nodeto dan nodefrom
     def AstarbyID(self, idfrom, idto, isUsingAM):
         visited = [False for i in range (self.__nbNodes)]
         visitedFrom = [-1 for i in range (self.__nbNodes)]#belum ada yang dikunjungi
@@ -160,6 +188,7 @@ class Graph:
             path.reverse()
         return {"path": path, "distance": totalDistance[idto]}
     
+    #Mengembalikan jalur dan jarak hasil Astar berawal dan berakhir pada node bernama nodeto dan nodefrom
     def Astar(self, nodeto, nodefrom, isUsingAM):
         idto = self.__idNodes[nodeto]
         idfrom = self.__idNodes[nodefrom]

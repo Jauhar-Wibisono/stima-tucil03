@@ -22,6 +22,16 @@
   <body>
       <h1>Results</h1>
       <hr/>
+      <form method='post' enctype="multipart/form-data" border="1px solid black">
+        <div id='container_start'></div>
+        <div id='container_end'></div>
+        <input type='submit'>
+      </form>
+      <br>
+      <div>
+        <button id='dropdown_start'>A</button>
+        <button id='dropdown_end'>B</button>
+      </div>
       <p>distance = {{ result.distance }}</p>
       <p>path:</p>
       <div id='map' class='map'></div>
@@ -32,11 +42,37 @@
       <!-- Replace version in the URL with desired library version -->
       <script src='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.12.0/maps/maps-web.min.js'></script>
       <script>
+
+        // dropdown handler
+        /* When the user clicks on the button,
+        toggle between hiding and showing the dropdown content */
         tt.setProductInfo('interactiveMap', '1.0');
 
         var nodes = {{ nodes|tojson }};
         console.log(nodes);
-        var center_coordinate = [nodes[0][2],nodes[0][1]];
+        var meanx = 0, meany = 0;
+        var xmin = 1000, xmax = -1000, ymin = 1000, ymax = -1000;
+        for(var i=0; i<nodes.length; i++){
+          meanx += nodes[i][2];
+          meany += nodes[i][1];
+          if(nodes[i][2] > xmax){
+            xmax = nodes[i][2];
+          }
+          if(nodes[i][2] < xmin){
+            xmin = nodes[i][2];
+          }
+          if(nodes[i][1] > ymax){
+            ymax = nodes[i][1];
+          }
+          if(nodes[i][1] < ymin){
+            ymin = nodes[i][1]
+          }
+        }
+        meanx /= nodes.length;
+        meany /= nodes.length;
+
+        var center_coordinate = [meanx,meany];
+        var zoom_value = (2/(xmax-xmin) + 1/(ymax-ymin))
 
         var map = tt.map({
             key: 'o1geElO01tAzH56UIRG60l0g6cmtDWjz',
@@ -141,6 +177,56 @@
               });
             }
           });
+        document.getElementById('dropdown_start').onclick = function() {
+ 
+          var values = [];
+          for (var i in nodes){
+            values.push(nodes[i][0]);
+          }
+          
+          var select = document.createElement("select");
+          select.name = 'startnode';
+          select.id = 'startnode';
+          select.required = 'required';
+
+          for (const val of values) {
+            var option = document.createElement("option");
+            option.value = val;
+            option.text = val.charAt(0).toUpperCase() + val.slice(1);
+            select.appendChild(option);
+          }
+         
+          var label = document.createElement("label");
+          label.innerHTML = "Start node: ";
+          label.htmlFor = "startnode";
+         
+          document.getElementById("container_start").appendChild(label).appendChild(select);
+        }
+        document.getElementById('dropdown_end').onclick = function() {
+ 
+          var values = [];
+          for (var i in nodes){
+            values.push(nodes[i][0])   
+          }
+          
+          var select = document.createElement("select");
+          select.name = 'endnode';
+          select.id = 'endnode';
+          select.required = 'required';
+         
+          for (const val of values) {
+            var option = document.createElement("option");
+            option.value = val;
+            option.text = val.charAt(0).toUpperCase() + val.slice(1);
+            select.appendChild(option);
+          }
+         
+          var label = document.createElement("label");
+          label.innerHTML = "End node: ";
+          label.htmlFor = "endnode";
+         
+          document.getElementById("container_end").appendChild(label).appendChild(select);
+        }
       </script>
   </body>
 </html>
