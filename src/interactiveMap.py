@@ -43,5 +43,20 @@ def MainPage():
             # jalankan algoritme A*
             
             # tampilkan hasil
+            return redirect(url_for('ResultsPage', filename=input_filename[:-4]))
             return render_template('results-page.html', result=graph.Astar("Arad", "Eforie", True), nodes=graph.nodes(), edge_list=graph.edgeList())
     return render_template('main-page.html')
+
+# results page
+@app.route('/results-<filename>', methods=['GET', 'POST'])
+def ResultsPage(filename):
+    graph = readInput(filename+'.txt')
+    if request.method == 'POST':
+        if 'startnode' in request.form and 'endnode' in request.form:
+            start_node = request.form['startnode']
+            end_node = request.form['endnode']
+            return render_template('results-page.html', result=graph.Astar(start_node, end_node, True), nodes=graph.nodes(), edge_list=graph.edgeList())
+    return render_template('results-page.html', result={}, nodes=graph.nodes(), edge_list=graph.edgeList())
+
+if __name__ == '__main__':
+    app.run()
