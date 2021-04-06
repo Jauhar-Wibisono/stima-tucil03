@@ -30,11 +30,11 @@
       <br>
       <p>distance = {{ result.distance }}</p>
       <p>path =  
-        {% for i in result.path %}
+        {% for i in range(result.path|length) %}
           {% if i > 0 %}
             ->
           {% endif %}
-          {{ nodes[i][0] }}
+          {{ nodes[result.path[i]][0] }}
         {% endfor %}
       </p>
       <div id='map' class='map' ></div>
