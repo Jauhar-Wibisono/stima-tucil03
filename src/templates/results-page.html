@@ -43,10 +43,6 @@
         });
 
         var path = {{ path|tojson }};
-        // console.log(path);
-        // for (x in path){
-        //   console.log(path[x]);
-        // }
 
         for (i in path){
           var long = path[i][1];
@@ -64,6 +60,97 @@
 
           var popup = new tt.Popup({offset: popupOffsets}).setHTML(name);
           marker.setPopup(popup).togglePopup();
+
+          map.on('load', function() {
+            map.addLayer({
+              'id': '1',
+              'type': 'line',
+              'source': {
+                  'type': 'geojson',
+                  'data': {
+                      'type': 'FeatureCollection',
+                      'features': [
+                          {
+                              'type': 'Feature',
+                              'geometry': {
+                                  'type': 'LineString',
+                                  'properties': {},
+                                  'coordinates': [
+                                      [path[0][2], path[0][1]],
+                                      [path[1][2], path[1][1]]
+                                  ]
+                              }
+                          }
+                      ]
+                  }
+              },
+              'layout': {
+                  'line-cap': 'round',
+                  'line-join': 'round'
+              },
+              'paint': {
+                  'line-color': '#ff0000',
+                  'line-width': 9
+              }
+              });
+            });
+
+          // map.addLayer({
+          //   'id': '123',
+          //   'type': 'line',
+          //   'source': {
+          //       'type': 'geojson',
+          //       'data': {
+          //           'type': 'FeatureCollection',
+          //           'features': [
+          //               {
+          //                   'type': 'Feature',
+          //                   'geometry': {
+          //                       'type': 'LineString',
+          //                       'properties': {},
+          //                       'coordinates': [
+          //                           [2.7505287, 41.6709659],
+          //                           [2.5010908655347097, 41.57083364442753]
+          //                       ]
+          //                   }
+          //               }
+          //           ]
+          //       }
+          //   },
+          //   'layout': {
+          //       'line-cap': 'round',
+          //       'line-join': 'round'
+          //   },
+          //   'paint': {
+          //       'line-color': '#ff0000',
+          //       'line-width': 9
+          //   }
+          //   });
+
+          // map.addSource('my-geojson', {
+          //   type: 'geojson',
+          //   data: {
+          //       "type": "Feature",
+          //       "geometry": {
+          //           "type": "LineString",
+          //           "coordinates": [
+          //               [
+          //                   [2.7505287, 41.6709659],
+          //                   [2.5010908655347097, 41.57083364442753]
+          //               ]
+          //           ]
+          //       }
+          //   },
+          //   'layout': {
+          //       'line-cap': 'round',
+          //       'line-join': 'round'
+          //   },
+          //   'paint': {
+          //       'line-color': '#ff0000',
+          //       'line-width': 9
+          //   }
+          // });
+
         }
 
       </script>
