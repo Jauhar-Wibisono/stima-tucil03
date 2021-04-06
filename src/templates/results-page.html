@@ -28,7 +28,7 @@
         <input type='submit'>
       </form>
       <br>
-      <p>distance = {{ result.distance }}</p>
+      <p>distance = {{ result.distance|int }} meter</p>
       <p>path =  
         {% for i in range(result.path|length) %}
           {% if i > 0 %}
