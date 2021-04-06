@@ -11,17 +11,40 @@ class Graph:
             self.__nodeNames.append(nodes[i][0])
             self.__idNodes[nodes[i][0]] = i
             self.__coordinates.append((nodes[i][1], nodes[i][2]))
-        self.__adjacencyMatrix = adjacencyMatrix
+        self.__adjacencyMatrix = [[-1 for i in range (self.__nbNodes)] for j in range (self.__nbNodes)]
         self.__adjacencyList = [[] for i in range (self.__nbNodes)]
         for i in range (self.__nbNodes):
             for j in range (self.__nbNodes):
-                if self.__adjacencyMatrix[i][j]:
+                if adjacencyMatrix[i][j]>0:
                     distance = euclidianDistance(self.__coordinates[i], self.__coordinates[j])
                     self.__adjacencyMatrix[i][j] = distance
                     self.__adjacencyList[i].append((j, distance))
-                else:
-                    self.__adjacencyMatrix[i][j] = -1
+            #print(self.__adjacencyMatrix[i])
 
+    def nbNodes(self):
+        return self.__nbNodes
+    def nodes(self):
+        toReturn = []
+        for i in range (self.__nbNodes):
+            toReturn.append([self.__nodeNames[i], self.__coordinates[i][0], self.__coordinates[i][1]])
+        return toReturn
+    def idNodes(self):
+        return self.__idNodes
+    def adjacencyMatrix(self):
+        toReturn = []
+        return self.__adjacencyMatrix
+    def adjacencyList(self):
+        return self.__adjacencyList
+    def edgeList(self):
+        edgeCoordinates = []
+        for i in range (self.__nbNodes):
+            for j in range (i):
+                #print(self.__adjacencyMatrix[i][j], end = " ")
+                if (self.__adjacencyMatrix[i][j] >= 0):
+                    edgeCoordinates.append([self.__coordinates[i][0], self.__coordinates[i][1], self.__coordinates[j][0], self.__coordinates[j][1]])
+            #print()
+        return edgeCoordinates
+    
     def addNode(self, newNode):
         self.__nodeNames.append(newNode[0])
         self.__idNodes[newNode[0]] = self.__nbNodes
@@ -136,6 +159,12 @@ class Graph:
                 path.append(node)
             path.reverse()
         return {"path": path, "distance": totalDistance[idto]}
+    
+    def Astar(self, nodeto, nodefrom, isUsingAM):
+        idto = self.__idNodes[nodeto]
+        idfrom = self.__idNodes[nodefrom]
+        return self.AstarbyID(idto, idfrom, isUsingAM)
+
         
 
 

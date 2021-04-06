@@ -22,7 +22,7 @@
   <body>
       <h1>Results</h1>
       <hr/>
-      <p>distance = {{ distance }}</p>
+      <p>distance = {{ result.distance }}</p>
       <p>path:</p>
       <div id='map' class='map'></div>
       <hr/>
@@ -34,7 +34,9 @@
       <script>
         tt.setProductInfo('interactiveMap', '1.0');
 
-        var center_coordinate = ['{{ path[0][1] }}', '{{ path[0][0] }}'];
+        var nodes = {{ nodes|tojson }};
+        console.log(nodes);
+        var center_coordinate = [nodes[0][2],nodes[0][1]];
 
         var map = tt.map({
             key: 'o1geElO01tAzH56UIRG60l0g6cmtDWjz',
@@ -42,8 +44,6 @@
             center: center_coordinate,
             zoom: 4
         });
-
-        var nodes = {{ nodes|tojson }};
 
         // set marker node
         for (i in nodes){
@@ -66,7 +66,7 @@
 
         // set garis edge
         var edges = {{ edge_list|tojson }};
-        // console.log(edges);
+        console.log(edges);
         map.on('load', function() {
           for (var i in edges){
               map.addLayer({
@@ -104,9 +104,10 @@
           });
 
           // set garis path
-          var path = {{ path|tojson }};
+          var result = {{ result|tojson }};
+          console.log(result)
           map.on('load', function() {
-          for (var i in path){
+          for (var i=1; i<result.path.length; i++){
               map.addLayer({
                 'id': 'path'+i,
                 'type': 'line',
@@ -121,8 +122,8 @@
                                   'type': 'LineString',
                                   'properties': {},
                                   'coordinates': [
-                                    [path[i][1], path[i][0]],
-                                    [path[i][3], path[i][2]]
+                                    [nodes[result.path[i-1]][2], nodes[result.path[i-1]][1]],
+                                    [nodes[result.path[i]][2], nodes[result.path[i]][1]]
                                   ]
                                 },
                             }
