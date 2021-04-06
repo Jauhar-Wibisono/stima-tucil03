@@ -20,11 +20,12 @@
       {% endblock %}
   </head>
   <body>
-      <h1>My Map</h1>
-      <h3>Results</h3>
+      <h1>Results</h1>
+      <hr/>
       <p>distance = {{ distance }}</p>
       <p>path:</p>
       <div id='map' class='map'></div>
+      <hr/>
       <a href="/">return</a>
       </div>
       <!-- scripts -->
@@ -33,7 +34,7 @@
       <script>
         tt.setProductInfo('interactiveMap', '1.0');
 
-        var center_coordinate = ['{{ path[0][2] }}', '{{ path[0][1] }}'];
+        var center_coordinate = ['{{ path[0][1] }}', '{{ path[0][0] }}'];
 
         var map = tt.map({
             key: 'o1geElO01tAzH56UIRG60l0g6cmtDWjz',
@@ -42,12 +43,13 @@
             zoom: 4
         });
 
-        var path = {{ path|tojson }};
+        var nodes = {{ nodes|tojson }};
 
-        for (i in path){
-          var long = path[i][1];
-          var lat = path[i][2];
-          var name = path[i][0];
+        // set marker node
+        for (i in nodes){
+          var long = nodes[i][1];
+          var lat = nodes[i][2];
+          var name = nodes[i][0];
           var marker = new tt.Marker().setLngLat([lat, long]).addTo(map);
           var popupOffsets = {
             top: [0, 0],
@@ -60,99 +62,84 @@
 
           var popup = new tt.Popup({offset: popupOffsets}).setHTML(name);
           marker.setPopup(popup).togglePopup();
+        }
 
-          map.on('load', function() {
-            map.addLayer({
-              'id': '1',
-              'type': 'line',
-              'source': {
-                  'type': 'geojson',
-                  'data': {
-                      'type': 'FeatureCollection',
-                      'features': [
-                          {
-                              'type': 'Feature',
-                              'geometry': {
+        // set garis edge
+        var edges = {{ edge_list|tojson }};
+        // console.log(edges);
+        map.on('load', function() {
+          for (var i in edges){
+              map.addLayer({
+                'id': 'edge'+i,
+                'type': 'line',
+                'source': {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'features': [
+                            {
+                                'type': 'Feature',
+                                'geometry': {
                                   'type': 'LineString',
                                   'properties': {},
                                   'coordinates': [
-                                      [path[0][2], path[0][1]],
-                                      [path[1][2], path[1][1]]
+                                    [edges[i][1], edges[i][0]],
+                                    [edges[i][3], edges[i][2]]
                                   ]
-                              }
-                          }
-                      ]
-                  }
-              },
-              'layout': {
+                                },
+                            }
+                        ]
+                    }
+                },
+                'layout': {
                   'line-cap': 'round',
                   'line-join': 'round'
-              },
-              'paint': {
+                },
+                'paint': {
+                  'line-color': '#a1a1a1',
+                  'line-width': 9
+                }
+              });
+            }
+          });
+
+          // set garis path
+          var path = {{ path|tojson }};
+          map.on('load', function() {
+          for (var i in path){
+              map.addLayer({
+                'id': 'path'+i,
+                'type': 'line',
+                'source': {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'features': [
+                            {
+                                'type': 'Feature',
+                                'geometry': {
+                                  'type': 'LineString',
+                                  'properties': {},
+                                  'coordinates': [
+                                    [path[i][1], path[i][0]],
+                                    [path[i][3], path[i][2]]
+                                  ]
+                                },
+                            }
+                        ]
+                    }
+                },
+                'layout': {
+                  'line-cap': 'round',
+                  'line-join': 'round'
+                },
+                'paint': {
                   'line-color': '#ff0000',
                   'line-width': 9
-              }
+                }
               });
-            });
-
-          // map.addLayer({
-          //   'id': '123',
-          //   'type': 'line',
-          //   'source': {
-          //       'type': 'geojson',
-          //       'data': {
-          //           'type': 'FeatureCollection',
-          //           'features': [
-          //               {
-          //                   'type': 'Feature',
-          //                   'geometry': {
-          //                       'type': 'LineString',
-          //                       'properties': {},
-          //                       'coordinates': [
-          //                           [2.7505287, 41.6709659],
-          //                           [2.5010908655347097, 41.57083364442753]
-          //                       ]
-          //                   }
-          //               }
-          //           ]
-          //       }
-          //   },
-          //   'layout': {
-          //       'line-cap': 'round',
-          //       'line-join': 'round'
-          //   },
-          //   'paint': {
-          //       'line-color': '#ff0000',
-          //       'line-width': 9
-          //   }
-          //   });
-
-          // map.addSource('my-geojson', {
-          //   type: 'geojson',
-          //   data: {
-          //       "type": "Feature",
-          //       "geometry": {
-          //           "type": "LineString",
-          //           "coordinates": [
-          //               [
-          //                   [2.7505287, 41.6709659],
-          //                   [2.5010908655347097, 41.57083364442753]
-          //               ]
-          //           ]
-          //       }
-          //   },
-          //   'layout': {
-          //       'line-cap': 'round',
-          //       'line-join': 'round'
-          //   },
-          //   'paint': {
-          //       'line-color': '#ff0000',
-          //       'line-width': 9
-          //   }
-          // });
-
-        }
-
+            }
+          });
       </script>
   </body>
 </html>
