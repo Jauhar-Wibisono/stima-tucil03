@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html class='use-all-space'>
+  <head>
+      {% block head %}
+      <title>My Map</title>
+      <meta http-equiv='X-UA-Compatible' content='IE=Edge' />
+      <meta charset='UTF-8'>
+      <meta name='viewport'
+            content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'/>
+      <!-- Replace version in the URL with desired library version -->
+      <link rel='stylesheet' type='text/css' href='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.12.0/maps/maps.css'/>
+      <!-- styles -->
+      <style>
+        #map {
+          width: 500px;
+          height: 500px;
+        }
+      </style>
+      {% endblock %}
+  </head>
+  <body>
+      <h1>My Map</h1>
+      <h3>Results</h3>
+      <p>distance = {{ distance }}</p>
+      <p>path:</p>
+      <div id='map' class='map'></div>
+      <a href="/">return</a>
+      </div>
+      <!-- scripts -->
+      <!-- Replace version in the URL with desired library version -->
+      <script src='https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.12.0/maps/maps-web.min.js'></script>
+      <script>
+        tt.setProductInfo('interactiveMap', '1.0');
+
+        var center_coordinate = ['{{ path[0][2] }}', '{{ path[0][1] }}'];
+
+        var map = tt.map({
+            key: 'o1geElO01tAzH56UIRG60l0g6cmtDWjz',
+            container: 'map',
+            center: center_coordinate,
+            zoom: 4
+        });
+
+        var path = {{ path|tojson }};
+        // console.log(path);
+        // for (x in path){
+        //   console.log(path[x]);
+        // }
+
+        for (i in path){
+          var long = path[i][1];
+          var lat = path[i][2];
+          var name = path[i][0];
+          var marker = new tt.Marker().setLngLat([lat, long]).addTo(map);
+          var popupOffsets = {
+            top: [0, 0],
+            bottom: [0, -70],
+            'bottom-right': [0, -70],
+            'bottom-left': [0, -70],
+            left: [25, -35],
+            right: [-25, -35]
+          };
+
+          var popup = new tt.Popup({offset: popupOffsets}).setHTML(name);
+          marker.setPopup(popup).togglePopup();
+        }
+
+      </script>
+  </body>
+</html>
