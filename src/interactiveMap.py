@@ -24,7 +24,7 @@ def readInput(filename):
     for i in range(N):
         row = inp.readline().split(' ')
         for j in range(N):
-            if row[j] == '1':
+            if row[j][0] == '1':
                 adjacencyMatrix[i][j] = 1
     graph = Graph(nodes, adjacencyMatrix)
     return graph
@@ -54,7 +54,8 @@ def ResultsPage(filename):
         if 'startnode' in request.form and 'endnode' in request.form:
             start_node = request.form['startnode']
             end_node = request.form['endnode']
-            return render_template('results-page.html', result=graph.Astar(start_node, end_node, True), nodes=graph.nodes(), edge_list=graph.edgeList())
+            result = graph.Astar(start_node, end_node, True)
+            return render_template('results-page.html', result=result, nodes=graph.nodes(), edge_list=graph.edgeList())
     return render_template('results-page.html', result={"path":[], "distance":0}, nodes=graph.nodes(), edge_list=graph.edgeList())
 
 if __name__ == '__main__':
